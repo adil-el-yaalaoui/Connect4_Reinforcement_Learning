@@ -38,7 +38,7 @@ class Node:
 
 
 class MCTS:
-    def __init__(self,nb_simulations, model : DQN, memory_buffer : ReplayMemory,epsilon : float=0.99,eps_decay:float=.9995) -> None:
+    def __init__(self,nb_simulations, model : DQN, memory_buffer : ReplayMemory, epsilon : float=0.99,eps_decay:float=.9995) -> None:
         self.nb_simulations=nb_simulations
         self.model=model
         self.memory_buffer=memory_buffer
@@ -70,10 +70,10 @@ class MCTS:
         return action
 
     def choose_action_greedy(self,root :Node):
-        if np.random.rand() < self.epsilon:
-            return np.random.choice(root.env.legal_moves)
-        else:
-            return root.best_child(0).move
+        #if np.random.rand() < self.epsilon:
+            #return np.random.choice(root.env.legal_moves)
+        #else:
+        return root.best_child().move
 
     def selection(self, node : Node):
         while not node.is_terminal():
