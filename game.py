@@ -3,7 +3,6 @@ from tkinter import messagebox
 from tkinter import *
 from env import Connect4env
 from agents import DQN,ReplayMemory,MCTS
-
 import torch
 
 environment=Connect4env()
@@ -15,7 +14,6 @@ model.load_state_dict(torch.load("model_mcts.pth"))
 
 mcts = MCTS(nb_simulations=1000, model=model, memory_buffer=replay_memory)
 
-
 window = tk.Tk()
 window.title("Connect 4")
 
@@ -25,7 +23,6 @@ canvas = tk.Canvas(window, width=WIDTH * 100, height=HEIGHT * 100,bg="white")
 canvas.grid(row=1, column=0, columnspan=WIDTH+1)
 
 
-
 map_color={1:"Red",2:"Yellow",0:"Draw"}
 
 grid = [[None for _ in range(WIDTH+1)] for _ in range(HEIGHT)]
@@ -33,32 +30,20 @@ boutons=[]
 
 def jouer(colonne):
     environment.step(colonne)
-    
     plot_game()
     update_boutons(environment.legal_moves)
-
     if environment.winner != -1:
         afficher_gagnant()
-    
     window.after(100, mcts_move)  
 
 def mcts_move():
-
     action = mcts.search(environment)
-    
-
     environment.step(action)
-    
-
     plot_game()
     update_boutons(environment.legal_moves)
-    
-    # Check if there is a winner
     if environment.winner != -1:
         afficher_gagnant()
     
-
-
 def update_boutons(legal_moves):
     full_legal_moves=[0,1,2,3,4,5,6]
     for index in full_legal_moves:
@@ -78,7 +63,6 @@ def afficher_gagnant():
         reset_game()
     else:
         window.quit()  
-
 
 def create_columns():
     for j in range(WIDTH):
@@ -103,9 +87,7 @@ def plot_game():
             if couleur:
                 canvas.create_oval(i * 100 + 90, (HEIGHT-1-j) * 100 + 90, i * 100 + 10, (HEIGHT-1-j) * 100 + 10, fill=map_color[couleur], outline="black")
                 
-
 create_columns()
-
 plot_grid()
 plot_game()
 window.mainloop()
