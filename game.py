@@ -11,7 +11,7 @@ environment.reset()
 
 replay_memory = ReplayMemory(capacity=10_000)
 model = DQN(n_observations=42,n_actions=7)
-model.load_state_dict(torch.load("model_mcts_pretrained.pth"))
+model.load_state_dict(torch.load("model_mcts.pth"))
 
 mcts = MCTS(nb_simulations=1000, model=model, memory_buffer=replay_memory)
 
@@ -108,5 +108,4 @@ create_columns()
 
 plot_grid()
 plot_game()
-mcts_move()
 window.mainloop()
