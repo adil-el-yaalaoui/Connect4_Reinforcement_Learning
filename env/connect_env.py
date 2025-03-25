@@ -52,7 +52,7 @@ class Connect4env(gym.Env):
 
         """
   
-        if not(movecol >= 0 and movecol <= self.width and self.board[movecol][self.height - 1] == 0):
+        if movecol not in self.legal_moves:
             raise ValueError("This is not a valid move, the column is full or you are out of bounds")
         
         row=self.height-1
@@ -67,6 +67,10 @@ class Connect4env(gym.Env):
 
         return movecol,row
 
+    def game_termination(self):
+        if not self.legal_moves:
+            return True
+        else : return False
 
     def step(self, movecol):
         """
@@ -135,6 +139,7 @@ class Connect4env(gym.Env):
                 n += 1
 
             if p + n >= (self.connect + 1): # want (p-1) + (n-1) + 1 >= 4, or more simply p + n >- 5
+                self.legal_moves=[]
                 return True
 
         return False
