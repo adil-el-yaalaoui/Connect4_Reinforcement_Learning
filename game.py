@@ -26,7 +26,7 @@ canvas.grid(row=1, column=0, columnspan=WIDTH+1)
 
 
 
-map_color={1:"Red",2:"Yellow"}
+map_color={1:"Red",2:"Yellow",0:"Draw"}
 
 grid = [[None for _ in range(WIDTH+1)] for _ in range(HEIGHT)]
 boutons=[]
@@ -73,8 +73,8 @@ def reset_game():
     create_columns()
 
 def afficher_gagnant():
-    message = f"Winner is: {map_color[environment.current_player]}!"
-    if messagebox.askyesno("Gagnant", f"{message}\nVoulez-vous recommencer la partie ?"):
+    message = f"Winner is: {map_color[environment.winner]} !"
+    if messagebox.askyesno("Gagnant", f"{message}\nWould you like to play again ?"):
         reset_game()
     else:
         window.quit()  
