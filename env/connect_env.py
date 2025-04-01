@@ -79,13 +79,18 @@ class Connect4env(gym.Env):
 
         _,row_player=self.make_move(movecol)
 
-        reward_vector={1:0 , 2:0}
+        longest_chains=self.longest_chain()
+
+        reward_player_1=(longest_chains[1]-longest_chains[2])/self.connect
+        reward_player_2=(longest_chains[2]-longest_chains[1])/self.connect
+
+        reward_vector={1:reward_player_1 , 2:reward_player_2}
 
         if self.does_move_win(movecol, row_player):
             self.winner=self.current_player
 
-            reward_vector[self.current_player]=1
-            reward_vector[self.ennemy]=-1
+            reward_vector[self.current_player]+=1
+            reward_vector[self.ennemy]+=-1
 
             return self.get_obs(),reward_vector,self.legal_moves,self.winner
         
@@ -144,6 +149,45 @@ class Connect4env(gym.Env):
 
         return False
 
+    def longest_chain(self):
+        grid = self.board
+        rows, cols = grid.shape
+        longest_p1 = 0
+        longest_p2 = 0
+
+        def max_streak(lst, player):
+            max_count = 0
+            count = 0
+            for val in lst:
+                if val == player:
+                    count += 1
+                    max_count = max(max_count, count)
+                else:
+                    count = 0
+            return max_count
+
+        for row in grid:
+            longest_p1 = max(longest_p1, max_streak(row, 1))
+            longest_p2 = max(longest_p2, max_streak(row, 2))
+
+        for col in range(cols):
+            longest_p1 = max(longest_p1, max_streak(grid[:, col], 1))
+            longest_p2 = max(longest_p2, max_streak(grid[:, col], 2))
+
+
+        for d in range(-rows + 1, cols):
+            diag = np.diagonal(grid, offset=d)
+            longest_p1 = max(longest_p1, max_streak(diag, 1))
+            longest_p2 = max(longest_p2, max_streak(diag, 2))
+
+        flipped_grid = np.fliplr(grid)
+        for d in range(-rows + 1, cols):
+            diag = np.diagonal(flipped_grid, offset=d)
+            longest_p1 = max(longest_p1, max_streak(diag, 1))
+            longest_p2 = max(longest_p2, max_streak(diag, 2))
+
+        return {1:longest_p1, 2:longest_p2}
+    
     def is_on_board(self, x, y):
         return x >= 0 and x < self.width and y >= 0 and y < self.height
 
